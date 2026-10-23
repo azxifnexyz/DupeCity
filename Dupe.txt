@@ -1,0 +1,211 @@
+-- Azi Remote Firer + Note | BuyTool Dupe
+local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
+local LP = Players.LocalPlayer
+local PG = LP:WaitForChild("PlayerGui")
+
+-- Change this to your note!
+local NoteText = [[
+Hey boss man,
+This is my custom dupe UI.
+Make sure to type the tool name in the first box,
+and set the amount to -1 to try and force a dupe.
+
+If it doesn't work, the server is patched.
+- Azi
+tool list: SP, .50, G19,Heavy helmet
+Supported Games: Dsource city
+]]
+
+-- ─── UI SETUP ─────────────────────────────────────────────
+local sg = Instance.new("ScreenGui")
+sg.Name = "AziRemoteFire"
+sg.ResetOnSpawn = false
+sg.DisplayOrder = 999
+sg.Parent = PG
+
+-- ─── NOTE POPUP (HIDDEN BY DEFAULT) ───────────────────────
+local noteGui = Instance.new("Frame")
+noteGui.Size = UDim2.new(0, 300, 0, 200)
+noteGui.Position = UDim2.new(0.5, -150, 0.5, -100)
+noteGui.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+noteGui.BorderSizePixel = 0
+noteGui.Active = true
+noteGui.Visible = false
+noteGui.Parent = sg
+local ngc = Instance.new("UICorner"); ngc.CornerRadius = UDim.new(0, 8); ngc.Parent = noteGui
+local ngs = Instance.new("UIStroke"); ngs.Color = Color3.fromRGB(0, 150, 0); ngs.Thickness = 2; ngs.Parent = noteGui
+
+local noteTop = Instance.new("Frame")
+noteTop.Size = UDim2.new(1, 0, 0, 30)
+noteTop.BackgroundColor3 = Color3.fromRGB(20, 20, 22)
+noteTop.BorderSizePixel = 0
+noteTop.Parent = noteGui
+local ntc = Instance.new("UICorner"); ntc.CornerRadius = UDim.new(0, 8); ntc.Parent = noteTop
+local ntf = Instance.new("Frame"); ntf.Size = UDim2.new(1, 0, 0, 10); ntf.Position = UDim2.new(0, 0, 1, -10); ntf.BackgroundColor3 = Color3.fromRGB(20, 20, 22); ntf.BorderSizePixel = 0; ntf.Parent = noteTop
+
+local noteTitle = Instance.new("TextLabel")
+noteTitle.Size = UDim2.new(1, -20, 1, 0); noteTitle.Position = UDim2.new(0, 10, 0, 0)
+noteTitle.BackgroundTransparency = 1; noteTitle.Text = "Azi's Note"
+noteTitle.TextColor3 = Color3.fromRGB(0, 200, 0); noteTitle.Font = Enum.Font.GothamBold
+noteTitle.TextSize = 13; noteTitle.TextXAlignment = Enum.TextXAlignment.Left; noteTitle.Parent = noteTop
+
+local noteClose = Instance.new("TextButton")
+noteClose.Size = UDim2.new(0, 20, 0, 20); noteClose.Position = UDim2.new(1, -25, 0, 5)
+noteClose.BackgroundColor3 = Color3.fromRGB(150, 0, 0); noteClose.Text = "X"
+noteClose.TextColor3 = Color3.fromRGB(255, 255, 255); noteClose.Font = Enum.Font.GothamBold
+noteClose.TextSize = 10; noteClose.Parent = noteTop
+local ncc = Instance.new("UICorner"); ncc.CornerRadius = UDim.new(0, 4); ncc.Parent = noteClose
+noteClose.MouseButton1Click:Connect(function() noteGui.Visible = false end)
+
+local noteBox = Instance.new("ScrollingFrame")
+noteBox.Size = UDim2.new(1, -20, 1, -40); noteBox.Position = UDim2.new(0, 10, 0, 35)
+noteBox.BackgroundColor3 = Color3.fromRGB(10, 10, 12); noteBox.BorderColor3 = Color3.fromRGB(50, 50, 50)
+noteBox.BorderSizePixel = 1; noteBox.ScrollBarThickness = 4; noteBox.CanvasSize = UDim2.new(0, 0, 0, 0); noteBox.Parent = noteGui
+local nbcc = Instance.new("UICorner"); nbcc.CornerRadius = UDim.new(0, 6); nbcc.Parent = noteBox
+
+local noteText = Instance.new("TextLabel")
+noteText.Size = UDim2.new(1, -10, 1, 0); noteText.Position = UDim2.new(0, 5, 0, 5)
+noteText.BackgroundTransparency = 1; noteText.Text = NoteText
+noteText.TextColor3 = Color3.fromRGB(200, 200, 200); noteText.Font = Enum.Font.Gotham
+noteText.TextSize = 12; noteText.TextXAlignment = Enum.TextXAlignment.Left
+noteText.TextYAlignment = Enum.TextYAlignment.Top; noteText.TextWrapped = true; noteText.Parent = noteBox
+
+-- Update Note Canvas Size to fit text
+noteText:GetPropertyChangedSignal("Text"):Connect(function()
+    noteBox.CanvasSize = UDim2.new(0, 0, 0, noteText.TextBounds.Y + 10)
+end)
+noteBox.CanvasSize = UDim2.new(0, 0, 0, noteText.TextBounds.Y + 10)
+
+-- ─── MAIN UI ──────────────────────────────────────────────
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0, 240, 0, 245)
+main.Position = UDim2.new(0.5, -120, 0.5, -122)
+main.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+main.BorderSizePixel = 0
+main.Active = true
+main.Parent = sg
+local mc = Instance.new("UICorner"); mc.CornerRadius = UDim.new(0, 8); mc.Parent = main
+local ms = Instance.new("UIStroke"); ms.Color = Color3.fromRGB(150, 0, 0); ms.Thickness = 2; ms.Parent = main
+
+local topBar = Instance.new("Frame")
+topBar.Size = UDim2.new(1, 0, 0, 30)
+topBar.BackgroundColor3 = Color3.fromRGB(20, 20, 22)
+topBar.BorderSizePixel = 0
+topBar.Parent = main
+local tc = Instance.new("UICorner"); tc.CornerRadius = UDim.new(0, 8); tc.Parent = topBar
+local topFix = Instance.new("Frame"); topFix.Size = UDim2.new(1, 0, 0, 10); topFix.Position = UDim2.new(0, 0, 1, -10); topFix.BackgroundColor3 = Color3.fromRGB(20, 20, 22); topFix.BorderSizePixel = 0; topFix.Parent = topBar
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -20, 1, 0); title.Position = UDim2.new(0, 10, 0, 0)
+title.BackgroundTransparency = 1; title.Text = "Azi Dupe Tool"
+title.TextColor3 = Color3.fromRGB(255, 255, 255); title.Font = Enum.Font.GothamBold
+title.TextSize = 13; title.TextXAlignment = Enum.TextXAlignment.Left; title.Parent = topBar
+
+local closeBtn = Instance.new("TextButton")
+closeBtn.Size = UDim2.new(0, 20, 0, 20); closeBtn.Position = UDim2.new(1, -25, 0, 5)
+closeBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0); closeBtn.Text = "X"
+closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255); closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextSize = 10; closeBtn.Parent = topBar
+local cc = Instance.new("UICorner"); cc.CornerRadius = UDim.new(0, 4); cc.Parent = closeBtn
+closeBtn.MouseButton1Click:Connect(function() main.Visible = false end)
+
+-- Tool Input
+local toolLbl = Instance.new("TextLabel")
+toolLbl.Size = UDim2.new(0, 100, 0, 20); toolLbl.Position = UDim2.new(0, 10, 0, 40)
+toolLbl.BackgroundTransparency = 1; toolLbl.Text = "Tool Name"
+toolLbl.TextColor3 = Color3.fromRGB(200, 200, 200); toolLbl.Font = Enum.Font.Gotham
+toolLbl.TextSize = 12; toolLbl.TextXAlignment = Enum.TextXAlignment.Left; toolLbl.Parent = main
+
+local toolBox = Instance.new("TextBox")
+toolBox.Size = UDim2.new(1, -20, 0, 30); toolBox.Position = UDim2.new(0, 10, 0, 62)
+toolBox.BackgroundColor3 = Color3.fromRGB(10, 10, 12); toolBox.BorderColor3 = Color3.fromRGB(50, 50, 50)
+toolBox.BorderSizePixel = 1; toolBox.PlaceholderText = "e.g. SP"
+toolBox.Text = ""; toolBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+toolBox.Font = Enum.Font.Gotham; toolBox.TextSize = 12; toolBox.Parent = main
+local tbc = Instance.new("UICorner"); tbc.CornerRadius = UDim.new(0, 6); tbc.Parent = toolBox
+
+-- Amount Input
+local amountLbl = Instance.new("TextLabel")
+amountLbl.Size = UDim2.new(0, 100, 0, 20); amountLbl.Position = UDim2.new(0, 10, 0, 100)
+amountLbl.BackgroundTransparency = 1; amountLbl.Text = "Amount"
+amountLbl.TextColor3 = Color3.fromRGB(200, 200, 200); amountLbl.Font = Enum.Font.Gotham
+amountLbl.TextSize = 12; amountLbl.TextXAlignment = Enum.TextXAlignment.Left; amountLbl.Parent = main
+
+local amountBox = Instance.new("TextBox")
+amountBox.Size = UDim2.new(1, -20, 0, 30); amountBox.Position = UDim2.new(0, 10, 0, 122)
+amountBox.BackgroundColor3 = Color3.fromRGB(10, 10, 12); amountBox.BorderColor3 = Color3.fromRGB(50, 50, 50)
+amountBox.BorderSizePixel = 1; amountBox.PlaceholderText = "e.g. -1"
+amountBox.Text = "-1"; amountBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+amountBox.Font = Enum.Font.Gotham; amountBox.TextSize = 12; amountBox.Parent = main
+local abc = Instance.new("UICorner"); abc.CornerRadius = UDim.new(0, 6); abc.Parent = amountBox
+
+-- Fire Button
+local fireBtn = Instance.new("TextButton")
+fireBtn.Size = UDim2.new(1, -20, 0, 32); fireBtn.Position = UDim2.new(0, 10, 0, 160)
+fireBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0); fireBtn.Text = "FIRE EVENT"
+fireBtn.TextColor3 = Color3.fromRGB(255, 255, 255); fireBtn.Font = Enum.Font.GothamBold
+fireBtn.TextSize = 12; fireBtn.Parent = main
+local fbc = Instance.new("UICorner"); fbc.CornerRadius = UDim.new(0, 6); fbc.Parent = fireBtn
+
+-- Note Button
+local noteBtn = Instance.new("TextButton")
+noteBtn.Size = UDim2.new(1, -20, 0, 30); noteBtn.Position = UDim2.new(0, 10, 0, 200)
+noteBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 35); noteBtn.Text = "📝 READ NOTE"
+noteBtn.TextColor3 = Color3.fromRGB(255, 255, 255); noteBtn.Font = Enum.Font.GothamBold
+noteBtn.TextSize = 12; noteBtn.Parent = main
+local nbc = Instance.new("UICorner"); nbc.CornerRadius = UDim.new(0, 6); nbc.Parent = noteBtn
+
+noteBtn.MouseButton1Click:Connect(function()
+    noteGui.Visible = true
+end)
+
+-- ─── FIRE EVENT LOGIC ─────────────────────────────────────
+fireBtn.MouseButton1Click:Connect(function()
+    local toolName = toolBox.Text
+    local amount = tonumber(amountBox.Text) or -1
+
+    if toolName == "" then
+        fireBtn.Text = "ENTER A TOOL NAME"
+        fireBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        task.wait(1.5)
+        fireBtn.Text = "FIRE EVENT"
+        fireBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+        return
+    end
+
+    local success, err = pcall(function()
+        local Event = game:GetService("ReplicatedStorage").GunStoreFolder.BuyTool
+        Event:FireServer(toolName, amount)
+    end)
+
+    if success then
+        fireBtn.Text = "FIRED!"
+        fireBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+    else
+        fireBtn.Text = "EVENT FAILED"
+        fireBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        warn("Azi Dupe Error: " .. tostring(err))
+    end
+
+    task.wait(1.5)
+    fireBtn.Text = "FIRE EVENT"
+    fireBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+end)
+
+-- ─── DRAG LOGIC ───────────────────────────────────────────
+local dragging, dragStart, startPos
+topBar.InputBegan:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+        dragging = true; dragStart = i.Position; startPos = main.Position
+    end
+end)
+UIS.InputEnded:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then dragging = false end
+end)
+UIS.InputChanged:Connect(function(i)
+    if dragging and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
+        local d = i.Position - dragStart
+        main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X, startPos.Y.Scale, startPos.Y.Offset + d.Y)
+    end
+end)
